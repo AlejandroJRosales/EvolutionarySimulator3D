@@ -118,6 +118,8 @@ public class Environment : MonoBehaviour {
     }
 
     public static LivingEntity SenseFood (Coord coord, Animal self, System.Func<LivingEntity, LivingEntity, int> foodPreference) {
+        // Create a list of all the living entities that cna be easten
+        // Type LivingEntity because it can be a plant or rabbit
         var foodSources = new List<LivingEntity> ();
 
         List<Species> prey = preyBySpecies[self.species];
@@ -135,10 +137,10 @@ public class Environment : MonoBehaviour {
         for (int i = 0; i < foodSources.Count; i++) {
             Coord targetCoord = foodSources[i].coord;
             if (EnvironmentUtility.TileIsVisibile (coord.x, coord.y, targetCoord.x, targetCoord.y)) {
+                // Debug.Log(foodSources[i]);
                 return foodSources[i];
             }
         }
-
         return null;
     }
 

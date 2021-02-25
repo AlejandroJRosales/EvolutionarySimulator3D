@@ -261,25 +261,24 @@ public class Animal : LivingEntity {
     }
 
     /**
-     * HandleInteractions 
+     * HandleInteractions takes care of the animal eating and drinking
      */
     void HandleInteractions () {
         // If the the current action is eating the first check if the their is a food target? and the animal is hungry then eat TODO
         if (currentAction == CreatureAction.Eating) {
+            // If foodTarget is not null and the animal is hungry
             if (foodTarget && hunger > 0) {
                 float eatAmount = 0;
-                try
+                // If the food is type plant then access the consume function from Plant class
+                if (foodTarget is Plant)
                 {
-                    // Eat
                     eatAmount = Mathf.Min(hunger, Time.deltaTime * 1 / eatDuration);
                     eatAmount = ((Plant)foodTarget).Consume(eatAmount);
                 }
-
-                catch (Exception e)
+                // Else if the food is type animal then access the cosume function from Animal class
+                else if (foodTarget is Animal)
                 {
-                    // this may not be working as a cast, becuase food target cannot be of type Rabbit, as foodTarget is type LivingEntity
-                    eatAmount = ((Rabbit)foodTarget).Consume();
-                    Debug.Log (e.Message);
+                    eatAmount = ((Animal)foodTarget).Consume();
                 }
                 hunger -= eatAmount;
             }
@@ -291,6 +290,15 @@ public class Animal : LivingEntity {
                 thirst = Mathf.Clamp01 (thirst);
             }
         }
+    }
+
+    /**
+     * Cosnume allows the animal to be eaten and returns some amount of food resotration. Temporary amount for now
+     */
+    public float Consume()
+    {
+        Die(CauseOfDeath.Eaten);
+        return 10;
     }
 
     void AnimateMove () {
