@@ -43,6 +43,7 @@ public class Animal : LivingEntity {
     protected LivingEntity foodTarget;
     protected LivingEntity predatorTarget;
     protected Coord waterTarget;
+    protected System.Random rnd;
 
     // Move data:
     bool animatingMovement;
@@ -124,6 +125,7 @@ public class Animal : LivingEntity {
         // Decide next action:
         // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
         bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
+        // Avoiding the predator takes presedence
         if (Environment.SensePredator(moveFromCoord, this, PreferencePenalty))
         {
             AvoidPredator ();
@@ -144,7 +146,6 @@ public class Animal : LivingEntity {
      */
     protected virtual void AvoidPredator()
     {
-        // Debug.Log("avoiding predator");
         // Find the food source, then store it in food source
         // It is type LivingEntity because we may add more than one predator later
         // Send SensePredator the animals current coordinates so it can discover a path to run
@@ -159,8 +160,7 @@ public class Animal : LivingEntity {
             predatorTarget = predatorSource;
             // Make a path to food source
             // Since food source is type LivingEntity, it has coordinates to go to
-            // Debug.Log(predatorSource);
-            NextAvoidanceMove(predatorTarget.coord);
+            AvoidanceMove(predatorTarget.coord);
         }
         else
         {
@@ -237,7 +237,7 @@ public class Animal : LivingEntity {
                 StartMoveToCoord (Environment.GetNextTileWeighted (coord, moveFromCoord));
                 break;
             case CreatureAction.AvoidingPredator:
-                NextAvoidanceMove (predatorTarget.coord);
+                AvoidanceMove (predatorTarget.coord);
                 break;
             case CreatureAction.GoingToFood:
                 // Detect if current coordinates of the animal is neighboor to foodTartget.coord
@@ -269,13 +269,17 @@ public class Animal : LivingEntity {
     }
 
     /**
-     * NextAvoidanceMove determines a point for the prey to run away to to avoid the predator chasing it
+     * AvoidanceMove determines a point for the prey to run away to to avoid the predator chasing it
      */
-    protected void NextAvoidanceMove (Coord target)
+    protected void AvoidanceMove (Coord target)
     {
         target.x = coord.x + Math.Sign(coord.x - target.x);
         target.y = coord.y + Math.Sign(coord.y - target.y);
-        StartMoveToCoord (target);
+
+        if (Environment.walkable[target.x, target.y])
+        {
+            StartMoveToCoord(target);
+        }
     }
 
     /**
