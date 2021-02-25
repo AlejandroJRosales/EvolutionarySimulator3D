@@ -24,7 +24,7 @@ public class Animal : LivingEntity {
 
     // Settings:
     float timeBetweenActionChoices = 1;
-    float moveSpeed = 1.5f;
+    float moveSpeed = 2f;
     float timeToDeathByHunger = 200;
     float timeToDeathByThirst = 200;
 
@@ -276,17 +276,21 @@ public class Animal : LivingEntity {
         target.x = coord.x + Math.Sign(coord.x - target.x);
         target.y = coord.y + Math.Sign(coord.y - target.y);
 
-        if (!Environment.walkable[target.x, target.y])
-        {
-            Debug.Log("not walkable");
-            Debug.Log(Random.Range(-1, 1));
-            target.x = coord.x + Random.Range(-1, 1);
-            target.y = coord.y + Random.Range(-1, 1);
-            
-        }
+        //int worldSize = Environment.walkable.Length - 1;
+        //// Check if where the animal wants to move is not outside the map
+        //if (target.x < worldSize && target.y < worldSize)
+        //{
+
+        // If the spot they want to move is walkable
         if (Environment.walkable[target.x, target.y])
         {
-            StartMoveToCoord (target);
+            Debug.Log("avoiding");
+            StartMoveToCoord(target);
+        }
+        else
+        {
+            // If where they want to move is not inside the map or not walkable, ie water, etc, then roam
+            StartMoveToCoord(Environment.GetNextTileWeighted(coord, moveFromCoord));
         }
     }
 

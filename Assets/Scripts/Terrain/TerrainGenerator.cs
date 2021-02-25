@@ -44,6 +44,11 @@ namespace TerrainGeneration {
             }
         }
 
+        public int getSize()
+        {
+            return worldSize;
+        }
+
         public TerrainData Generate () {
             CreateMeshComponents ();
 
