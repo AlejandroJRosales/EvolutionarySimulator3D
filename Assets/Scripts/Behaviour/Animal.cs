@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Animal : LivingEntity {
 
@@ -43,7 +44,6 @@ public class Animal : LivingEntity {
     protected LivingEntity foodTarget;
     protected LivingEntity predatorTarget;
     protected Coord waterTarget;
-    protected System.Random rnd;
 
     // Move data:
     bool animatingMovement;
@@ -276,9 +276,17 @@ public class Animal : LivingEntity {
         target.x = coord.x + Math.Sign(coord.x - target.x);
         target.y = coord.y + Math.Sign(coord.y - target.y);
 
+        if (!Environment.walkable[target.x, target.y])
+        {
+            Debug.Log("not walkable");
+            Debug.Log(Random.Range(-1, 1));
+            target.x = coord.x + Random.Range(-1, 1);
+            target.y = coord.y + Random.Range(-1, 1);
+            
+        }
         if (Environment.walkable[target.x, target.y])
         {
-            StartMoveToCoord(target);
+            StartMoveToCoord (target);
         }
     }
 
