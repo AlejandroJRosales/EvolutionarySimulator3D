@@ -284,10 +284,11 @@ public class Animal : LivingEntity {
             }
         // If the current action is drinking, then check if the animal is thirsty
         } else if (currentAction == CreatureAction.Drinking) {
-            if (thirst > 0) {
+            if (thirst > 0)
+            {
                 // Drink
                 thirst -= Time.deltaTime * 1 / drinkDuration;
-                thirst = Mathf.Clamp01 (thirst);
+                thirst = Mathf.Clamp01(thirst);
             }
         }
     }
@@ -298,7 +299,7 @@ public class Animal : LivingEntity {
     public float Consume()
     {
         Die(CauseOfDeath.Eaten);
-        return 10;
+        return (float)(hunger * 0.5);
     }
 
     void AnimateMove () {
