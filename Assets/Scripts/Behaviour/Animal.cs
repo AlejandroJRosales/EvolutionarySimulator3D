@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Animal : LivingEntity {
 
+    /*
+     * TODO: 
+     * Implement SensePotentialMates
+     * Disable animals being on top of eachother possibly using walkableCoords from Environment class
+     */
+
     public const int maxViewDistance = 10;
 
     [EnumFlags]
@@ -35,6 +41,7 @@ public class Animal : LivingEntity {
     public float thirst;
 
     protected LivingEntity foodTarget;
+    protected LivingEntity predatorTarget;
     protected Coord waterTarget;
 
     // Move data:
@@ -117,7 +124,11 @@ public class Animal : LivingEntity {
         // Decide next action:
         // Eat if (more hungry than thirsty) or (currently eating and not critically thirsty)
         bool currentlyEating = currentAction == CreatureAction.Eating && foodTarget && hunger > 0;
-        if (hunger >= thirst || currentlyEating && thirst < criticalPercent) {
+        if (Environment.SensePredator(moveFromCoord, this, PreferencePenalty))
+        {
+            AvoidPredator ();
+        }
+        else if (hunger >= thirst || currentlyEating && thirst < criticalPercent) {
             FindFood ();
         }
         // More thirsty than hungry
@@ -129,6 +140,36 @@ public class Animal : LivingEntity {
     }
 
     /**
+     * AvoidPredator is when the animal is avoiding a predator
+     */
+    protected virtual void AvoidPredator()
+    {
+        // Debug.Log("avoiding predator");
+        // Find the food source, then store it in food source
+        // It is type LivingEntity because we may add more than one predator later
+        // Send SensePredator the animals current coordinates so it can discover a path to run
+        LivingEntity predatorSource = Environment.SensePredator(coord, this, PreferencePenalty);
+
+        // Now, if there is a predator source, then set that as the target for movement, else, roam randomly
+        if (predatorSource)
+        {
+            // Set current action to going to avoiding predaotr
+            currentAction = CreatureAction.AvoidingPredator;
+            // Debug.Log(currentAction);
+            predatorTarget = predatorSource;
+            // Make a path to food source
+            // Since food source is type LivingEntity, it has coordinates to go to
+            // Debug.Log(predatorSource);
+            NextAvoidanceMove(predatorTarget.coord);
+        }
+        else
+        {
+            // set current action to exploring
+            currentAction = CreatureAction.Exploring;
+        }
+    }
+
+    /**
      * FindFood is when the animal is looking for food around itself
      */
     protected virtual void FindFood()
@@ -136,7 +177,7 @@ public class Animal : LivingEntity {
         // Find the food source, then store it in food source
         // It is type LivingEntity because it could be a plant or animal
         // Send SenseFood the animals current coordinates so it can discover a path
-        LivingEntity foodSource = Environment.SenseFood(coord, this, FoodPreferencePenalty);
+        LivingEntity foodSource = Environment.SenseFood(coord, this, PreferencePenalty);
 
         // Now, if there is a food source, then set that as the target for movement, else, roam randomly
         if (foodSource)
@@ -181,7 +222,7 @@ public class Animal : LivingEntity {
     /**
      * FoodPrefencePenalty When choosing from multiple food sources, the one with the lowest penalty will be selected
      */
-    protected virtual int FoodPreferencePenalty (LivingEntity self, LivingEntity food) {
+    protected virtual int PreferencePenalty (LivingEntity self, LivingEntity food) {
         return Coord.SqrDistance (self.coord, food.coord);
     }
 
@@ -189,14 +230,18 @@ public class Animal : LivingEntity {
      * Based on the currentAction move there
      */
     protected void Act () {
+        //Debug.Log(currentAction);
         switch (currentAction) {
             // If exploring, chose the next tile by weight, with those coordinates and move to coordinates
             case CreatureAction.Exploring:
                 StartMoveToCoord (Environment.GetNextTileWeighted (coord, moveFromCoord));
                 break;
+            case CreatureAction.AvoidingPredator:
+                NextAvoidanceMove (predatorTarget.coord);
+                break;
             case CreatureAction.GoingToFood:
                 // Detect if current coordinates of the animal is neighboor to foodTartget.coord
-                // If so then TODO
+                // If so then change CreatureAction from going to food to eating
                 if (Coord.AreNeighbours (coord, foodTarget.coord)) {
                     LookAt (foodTarget.coord);
                     // Then set current action to eating
@@ -208,7 +253,8 @@ public class Animal : LivingEntity {
                 }
                 break;
             case CreatureAction.GoingToWater:
-                // Detect if the coordinates of the animal is neighbored to waterTarget coordinates 
+                // Detect if the coordinates of the animal is neighbored to waterTarget coordinates
+                // If so then change CreatureAction from going to water to drinking
                 if (Coord.AreNeighbours (coord, waterTarget)) {
                     LookAt (waterTarget);
                     // Set current action to drinking
@@ -220,6 +266,16 @@ public class Animal : LivingEntity {
                 }
                 break;
         }
+    }
+
+    /**
+     * NextAvoidanceMove determines a point for the prey to run away to to avoid the predator chasing it
+     */
+    protected void NextAvoidanceMove (Coord target)
+    {
+        target.x = coord.x + Math.Sign(coord.x - target.x);
+        target.y = coord.y + Math.Sign(coord.y - target.y);
+        StartMoveToCoord (target);
     }
 
     /**

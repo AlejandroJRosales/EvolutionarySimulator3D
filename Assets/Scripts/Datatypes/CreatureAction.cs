@@ -2,6 +2,7 @@
     None,
     Resting,
     Exploring,
+    AvoidingPredator,
     GoingToFood,
     GoingToWater,
     Eating,

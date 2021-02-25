@@ -118,7 +118,7 @@ public class Environment : MonoBehaviour {
     }
 
     public static LivingEntity SenseFood (Coord coord, Animal self, System.Func<LivingEntity, LivingEntity, int> foodPreference) {
-        // Create a list of all the living entities that cna be easten
+        // Create a list of all the living entities that cna be eaten
         // Type LivingEntity because it can be a plant or rabbit
         var foodSources = new List<LivingEntity> ();
 
@@ -137,8 +137,37 @@ public class Environment : MonoBehaviour {
         for (int i = 0; i < foodSources.Count; i++) {
             Coord targetCoord = foodSources[i].coord;
             if (EnvironmentUtility.TileIsVisibile (coord.x, coord.y, targetCoord.x, targetCoord.y)) {
-                // Debug.Log(foodSources[i]);
                 return foodSources[i];
+            }
+        }
+        return null;
+    }
+
+    public static LivingEntity SensePredator(Coord coord, Animal self, System.Func<LivingEntity, LivingEntity, int> predatorAvoidancePreference)
+    {
+        // Create a list of all the living entities that need to be avoided
+        // Type LivingEntity because we may add more predators later
+        var predatorSources = new List<LivingEntity>();
+
+        List<Species> predator = predatorsBySpecies[self.species];
+        for (int i = 0; i < predator.Count; i++)
+        {
+
+            Map speciesMap = speciesMaps[predator[i]];
+
+            predatorSources.AddRange(speciesMap.GetEntities(coord, Animal.maxViewDistance));
+        }
+
+        // Sort predator sources based on preference function
+        predatorSources.Sort((a, b) => predatorAvoidancePreference(self, a).CompareTo(predatorAvoidancePreference(self, b)));
+
+        // Return first visible predator source
+        for (int i = 0; i < predatorSources.Count; i++)
+        {
+            Coord targetCoord = predatorSources[i].coord;
+            if (EnvironmentUtility.TileIsVisibile(coord.x, coord.y, targetCoord.x, targetCoord.y))
+            {
+                return predatorSources[i];
             }
         }
         return null;
