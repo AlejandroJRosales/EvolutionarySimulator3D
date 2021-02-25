@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
+    public AudioSource walkingSound;
 
     [Header("Info")]
     public float speed = 0;
@@ -22,34 +23,44 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
         speed = walkSpeed;
 
-        // check if grounded
+        // Check if grounded
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
 
-        // walking/sprinting
+        // Walking/sprinting
         if (Input.GetKey("left shift"))
         {
             speed = sprintSpeed;
         }
-
+        // Sound
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (!walkingSound.isPlaying)
+            {
+                walkingSound.Play();
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            walkingSound.Stop();
+        }
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
 
-        // jumping
+        // Jumping
         if (Input.GetButton("Jump"))
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        // no vertical movment
+        // No vertical movment
         if (Input.GetKey(KeyCode.C))
         {
             velocity.y = z;

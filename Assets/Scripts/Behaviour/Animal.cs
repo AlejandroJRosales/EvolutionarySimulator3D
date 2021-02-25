@@ -279,12 +279,10 @@ public class Animal : LivingEntity {
         //int worldSize = Environment.walkable.Length - 1;
         //// Check if where the animal wants to move is not outside the map
         //if (target.x < worldSize && target.y < worldSize)
-        //{
 
         // If the spot they want to move is walkable
         if (Environment.walkable[target.x, target.y])
         {
-            Debug.Log("avoiding");
             StartMoveToCoord(target);
         }
         else
