@@ -279,15 +279,15 @@ public class Environment : MonoBehaviour {
 
         // Store predator/prey relationships for all species
         for (int i = 0; i < initialPopulations.Length; i++) {
-            // this block of code runs 3 times
+            // This block of code runs 3 times
             if (initialPopulations[i].prefab is Animal) {
-                // this runs if the species in question is an animal
+                // This runs if the species in question is an animal
                 Animal hunter = (Animal) initialPopulations[i].prefab;
                 Species diet = hunter.diet;
 
                 for (int huntedSpeciesIndex = 0; huntedSpeciesIndex < numSpecies; huntedSpeciesIndex++) {
                     int bit = ((int) diet >> huntedSpeciesIndex) & 1;
-                    // this bit of diet mask set (i.e. the hunter eats this species)
+                    // This bit of diet (i.e. the hunter eats this species)
                     if (bit == 1) {
                         int huntedSpecies = 1 << huntedSpeciesIndex;
                         preyBySpecies[hunter.species].Add ((Species) huntedSpecies);
@@ -367,14 +367,14 @@ public class Environment : MonoBehaviour {
                 }
             }
         }
-        Debug.Log ("Init time: " + sw.ElapsedMilliseconds);
+        //Debug.Log ("Init time: " + sw.ElapsedMilliseconds);
     }
 
     void SpawnTrees () {
-        // Settings:
-        float maxRot = 4;
+        // Settings
+        float maxRot = 7;
         float maxScaleDeviation = .2f;
-        float colVariationFactor = 0.15f;
+        float colVariationFactor = 0.45f;
         float minCol = .8f;
 
         var spawnPrng = new System.Random (seed);
@@ -386,6 +386,7 @@ public class Environment : MonoBehaviour {
                 if (walkable[x, y]) {
                     if (prng.NextDouble () < treeProbability) {
                         // Randomize rot/scale
+                        // Meaning how far it leans
                         float rotX = Mathf.Lerp (-maxRot, maxRot, (float) spawnPrng.NextDouble ());
                         float rotZ = Mathf.Lerp (-maxRot, maxRot, (float) spawnPrng.NextDouble ());
                         float rotY = (float) spawnPrng.NextDouble () * 360f;
@@ -393,6 +394,9 @@ public class Environment : MonoBehaviour {
                         float scale = 1 + ((float) spawnPrng.NextDouble () * 2 - 1) * maxScaleDeviation;
 
                         // Randomize colour
+                        // Rot Y, so leaning
+                        //Debug.Log(rot[1]);
+                        //rotY = rot[1]
                         float col = Mathf.Lerp (minCol, 1, (float) spawnPrng.NextDouble ());
                         float r = col + ((float) spawnPrng.NextDouble () * 2 - 1) * colVariationFactor;
                         float g = col + ((float) spawnPrng.NextDouble () * 2 - 1) * colVariationFactor;

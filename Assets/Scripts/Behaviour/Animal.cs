@@ -5,13 +5,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Animal : LivingEntity {
-
-    /*
-     * TODO: 
-     * Implement SensePotentialMates
-     * Disable animals being on top of eachother possibly using walkableCoords from Environment class
-     */
-
     public const int maxViewDistance = 10;
 
     [EnumFlags]

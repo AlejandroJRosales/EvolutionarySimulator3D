@@ -124,7 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa81e76bbb0534ab4a7eac5974e8565f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colourMaterialIndex: 0
   species: 8
+  material: {fileID: 0}
   coord:
     x: 0
     y: 0
@@ -134,5 +136,7 @@ MonoBehaviour:
     y: 0
   diet: 4
   currentAction: 0
+  maleColour: {r: 0, g: 0, b: 0, a: 0}
+  femaleColour: {r: 0.4528302, g: 0.09611963, b: 0.09611963, a: 0}
   hunger: 0
   thirst: 0

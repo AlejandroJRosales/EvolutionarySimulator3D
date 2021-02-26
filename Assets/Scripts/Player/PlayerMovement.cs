@@ -29,8 +29,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(isSprinting);
-
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -83,16 +81,17 @@ public class PlayerMovement : MonoBehaviour
         // If not moving anymore
         else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
-            // Turn off sounds
+            // If player is sprinting and the stop pressing w, stop spritning
+            if (isSprinting && Input.GetKeyUp(KeyCode.W))
+            {
+                sprintingSound.Stop();
+                isSprinting = false;
+            }
             walkingSound.Stop();
-            sprintingSound.Stop();
-            // Turn off sprinting and set speed to 0 since player is not moving
-            isSprinting = false;
-            speed = 0;
         }
+
         // Move
         Vector3 move = transform.right * x + transform.forward * z;
-        Debug.Log(speed);
         controller.Move(move * speed * Time.deltaTime);
 
         // Jumping
