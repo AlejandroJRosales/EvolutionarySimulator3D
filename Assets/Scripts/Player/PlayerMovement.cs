@@ -34,12 +34,12 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        // Walking/sprinting
+        // Sprinting
         if (Input.GetKey("left shift"))
         {
             speed = sprintSpeed;
         }
-        // Sound
+        // Walking Sound
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
         {
             if (!walkingSound.isPlaying)
@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
         {
             walkingSound.Stop();
         }
+        // Moving
         Vector3 move = transform.right * x + transform.forward * z;
         controller.Move(move * speed * Time.deltaTime);
 

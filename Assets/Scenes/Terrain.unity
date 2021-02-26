@@ -189,7 +189,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 560620}
   walkingSound: {fileID: 560623}
-  sprintingSound: {fileID: 560624}
   speed: 10
   walkSpeed: 10
   sprintSpeed: 20
@@ -212,7 +211,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 7564fb13d2d941945a56c11fcaabf8cf, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.04
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -308,7 +307,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: ecf3a226060a1fe4a82c890e261d5329, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0
