@@ -6,26 +6,29 @@ public class PlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
     public AudioSource walkingSound;
+    public AudioSource sprintingSound;
 
     [Header("Info")]
-    public float speed = 0;
     public float walkSpeed = 10f;
-    public float sprintSpeed = 20f;
+    public float sprintSpeed = 30f;
     public float gravity = -40f;
     public float jumpHeight = 5f;
 
+    public float speed = 0;
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+    public float tapSpeed = 1f; //in seconds
+    private float lastTapTime = 0;
 
     Vector3 velocity;
     bool isGrounded;
+    bool isSprinting;
 
     void Update()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        speed = walkSpeed;
 
         // Check if grounded
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -35,24 +38,50 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Sprinting
-        if (Input.GetKey("left shift"))
+        if (!isSprinting && (Time.time - lastTapTime) < tapSpeed)
         {
-            speed = sprintSpeed;
+            isSprinting = true;
         }
-        // Walking Sound
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
+        // If user wants to move forward
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            if (!walkingSound.isPlaying)
+            // If sprinting
+            if (isSprinting)
             {
-                walkingSound.Play();
+                // Set speed to sprinting speed
+                speed = sprintSpeed;
+                // Play sprinting sound
+                if (!sprintingSound.isPlaying)
+                {
+                    sprintingSound.Play();
+                }
             }
+            // Otherwise walking
+            else
+            {
+                // Set speed to walking speed
+                speed = walkSpeed;
+                // Play walking sound
+                if (!walkingSound.isPlaying)
+                {
+                    walkingSound.Play();
+                }
+            }
+            lastTapTime = Time.time;
         }
-        if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
+        // If not moving anymore because not pressing w
+        if (Input.GetKeyUp(KeyCode.W))
         {
+            // Turn off sounds
             walkingSound.Stop();
+            sprintingSound.Stop();
+            // Turn off sprinting and set speed to 0 since player is not moving
+            isSprinting = false;
+            speed = 0;
         }
-        // Moving
+        // Move
         Vector3 move = transform.right * x + transform.forward * z;
+        Debug.Log(speed);
         controller.Move(move * speed * Time.deltaTime);
 
         // Jumping
