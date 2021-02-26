@@ -40,14 +40,14 @@ public class PlayerMovement : MonoBehaviour
             speed = sprintSpeed;
         }
         // Sound
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
         {
             if (!walkingSound.isPlaying)
             {
                 walkingSound.Play();
             }
         }
-        if (Input.GetKeyUp(KeyCode.W))
+        if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
             walkingSound.Stop();
         }
