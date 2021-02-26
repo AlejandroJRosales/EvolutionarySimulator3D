@@ -48,9 +48,14 @@ public class PlayerMovement : MonoBehaviour
         {
             isSprinting = true;
         }
-        // If user wants to move forward
-        if (Input.GetKeyDown(KeyCode.W))
+        // If user wants to move
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
         {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                lastTapTime = Time.time;
+                firstMove = true;
+            }
             // If sprinting
             if (isSprinting)
             {
@@ -73,8 +78,6 @@ public class PlayerMovement : MonoBehaviour
                     walkingSound.Play();
                 }
             }
-            lastTapTime = Time.time;
-            firstMove = true;
         }
         // If not moving anymore because not pressing w
         if (Input.GetKeyUp(KeyCode.W))
