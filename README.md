@@ -7,3 +7,5 @@ Link to his repository: https://github.com/SebLague/Ecosystem-2/tree/master
 
 # How to run
 To begin, this is a unity project. I use Visual Studios 2019 to edit the C# files. You need to clone this repositroy. Personally, I perfer to use TortiseGit. You can copy the https or ssh and clone to the repository to an empty folder with two clicks. Then, if you ever wanted to add updates, you can comit changes with a two clicks as well.
+
+## Some Images of the Simulation
