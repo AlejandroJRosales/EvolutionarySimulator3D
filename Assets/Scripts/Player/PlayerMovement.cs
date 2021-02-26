@@ -23,10 +23,14 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+    // Used to detect if the user has made their first move
+    bool firstMove = false;
     bool isSprinting;
 
     void Update()
     {
+        Debug.Log(isSprinting);
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -38,7 +42,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Sprinting
-        if (!isSprinting && (Time.time - lastTapTime) < tapSpeed)
+        // If the user has not made their first move then we do not care about elapsed time for
+        // the double tap, because they have yet to press the "w" key
+        if (firstMove && !isSprinting && (Time.time - lastTapTime) < tapSpeed)
         {
             isSprinting = true;
         }
@@ -68,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             lastTapTime = Time.time;
+            firstMove = true;
         }
         // If not moving anymore because not pressing w
         if (Input.GetKeyUp(KeyCode.W))
