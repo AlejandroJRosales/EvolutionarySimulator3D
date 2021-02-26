@@ -18,13 +18,13 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-    public float tapSpeed = 1f; //in seconds
+    public float tapSpeed = 0.2f; //in seconds
     private float lastTapTime = 0;
 
     Vector3 velocity;
     bool isGrounded;
     // Used to detect if the user has made their first move
-    bool firstMove = false;
+    bool firstMoveComplete = false;
     bool isSprinting;
 
     void Update()
@@ -44,18 +44,13 @@ public class PlayerMovement : MonoBehaviour
         // Sprinting
         // If the user has not made their first move then we do not care about elapsed time for
         // the double tap, because they have yet to press the "w" key
-        if (firstMove && !isSprinting && (Time.time - lastTapTime) < tapSpeed)
+        if (Input.GetKeyDown(KeyCode.W) && firstMoveComplete && (Time.time - lastTapTime) < tapSpeed)
         {
             isSprinting = true;
         }
         // If user wants to move
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                lastTapTime = Time.time;
-                firstMove = true;
-            }
             // If sprinting
             if (isSprinting)
             {
@@ -70,6 +65,12 @@ public class PlayerMovement : MonoBehaviour
             // Otherwise walking
             else
             {
+                // Detect elapsed time for only w since only sprint forward for now
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    lastTapTime = Time.time;
+                    firstMoveComplete = true;
+                }
                 // Set speed to walking speed
                 speed = walkSpeed;
                 // Play walking sound
@@ -79,8 +80,8 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
-        // If not moving anymore because not pressing w
-        if (Input.GetKeyUp(KeyCode.W))
+        // If not moving anymore
+        else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.A))
         {
             // Turn off sounds
             walkingSound.Stop();
