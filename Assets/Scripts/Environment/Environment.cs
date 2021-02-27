@@ -372,7 +372,7 @@ public class Environment : MonoBehaviour {
 
     void SpawnTrees () {
         // Settings
-        float maxRot = 7;
+        float maxRot = 7 ;
         float maxScaleDeviation = .2f;
         float colVariationFactor = 0.45f;
         float minCol = .8f;

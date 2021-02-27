@@ -24,7 +24,8 @@ public class Genes {
 
     public static Genes InheritedGenes (Genes mother, Genes father) {
         float[] values = new float[mother.values.Length];
-        // TODO: implement inheritance
+        // Send the genes values to Genes where the sex of the baby
+        // is determined
         Genes genes = new Genes (values);
         return genes;
     }
